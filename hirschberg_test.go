@@ -15,3 +15,24 @@ func TestHirschberg(t *testing.T) {
 	assert.Equal(t, "AB-CDEF", string(z))
 	assert.Equal(t, "ABCCDEF", string(w))
 }
+
+func BenchmarkHirschberg(b *testing.B) {
+	b.Run("6 char string", func(b *testing.B) {
+		x := []byte("ABCDEF")
+		y := []byte("ABCCDEF")
+
+		b.ReportAllocs()
+		for i := 0; i < b.N; i++ {
+			Hirschberg(x, y)
+		}
+	})
+	b.Run("25-30 char string", func(b *testing.B) {
+		x := []byte("This is a longer string")
+		y := []byte("This is a much  longer string")
+
+		b.ReportAllocs()
+		for i := 0; i < b.N; i++ {
+			Hirschberg(x, y)
+		}
+	})
+}

@@ -1,7 +1,5 @@
 package alignment
 
-import "fmt"
-
 var GapPenalty = -1
 
 func similarity(a byte, b byte) int {
@@ -68,6 +66,6 @@ func NeedlemanWunsch(x []byte, y []byte) ([]byte, []byte) {
 		w = append([]byte{y[j]}, w...)
 	}
 
-	fmt.Printf("LEN: %d|%d, SAME: %d, SUB: %d, DEL: %d, INSERT: %d\n", len(x), len(y), same, sub, del, ins)
+	//fmt.Printf("LEN: %d|%d, SAME: %d, SUB: %d, DEL: %d, INSERT: %d\n", len(x), len(y), same, sub, del, ins)
 	return z, w
 }

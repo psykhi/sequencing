@@ -1,9 +1,5 @@
 package alignment
 
-import (
-	"fmt"
-)
-
 func rev(s []byte) []byte {
 	ret := make([]byte, 0)
 	for i := len(s) - 1; i >= 0; i-- {
@@ -42,7 +38,7 @@ func sub(a byte, b byte) int {
 }
 
 func nwScore(x []byte, y []byte) []int {
-	fmt.Printf("NWS on %v and %v\n", string(x), string(y))
+	//fmt.Printf("NWS on %v and %v\n", string(x), string(y))
 	score := make([][]int, len(x)+1)
 	for i := 0; i <= len(x); i++ {
 		score[i] = make([]int, len(y)+1)
@@ -62,7 +58,7 @@ func nwScore(x []byte, y []byte) []int {
 			score[i][j] = max(scoreSub, scoreDel, scoreIns)
 		}
 	}
-	fmt.Printf("%v\n", score)
+	//fmt.Printf("%v\n", score)
 	return score[len(x)]
 }
 
@@ -82,7 +78,7 @@ func argmax(a []int, b []int) int {
 }
 
 func Hirschberg(x []byte, y []byte) ([]byte, []byte) {
-	fmt.Printf("H on %s and %s\n", string(x), string(y))
+	//fmt.Printf("H on %s and %s\n", string(x), string(y))
 	z := make([]byte, 0)
 	w := make([]byte, 0)
 	if len(x) == 0 {
@@ -106,10 +102,10 @@ func Hirschberg(x []byte, y []byte) ([]byte, []byte) {
 	xmid := xlen / 2
 	ScoreL := nwScore(x[0:xmid], y)
 	ScoreR := nwScore(rev(x[xmid:]), rev(y))
-	fmt.Printf("L %v R %v\n", ScoreL, ScoreR)
+	//fmt.Printf("L %v R %v\n", ScoreL, ScoreR)
 	ymid := argmax(ScoreL, revInt(ScoreR))
-	fmt.Printf("y %s\n", string(y))
-	fmt.Printf("Max %d\n", ymid)
+	//fmt.Printf("y %s\n", string(y))
+	//fmt.Printf("Max %d\n", ymid)
 	z1, w1 := Hirschberg(x[:xmid], y[:ymid])
 	z2, w2 := Hirschberg(x[xmid:], y[ymid:])
 	return append(z1, z2...), append(w1, w2...)
