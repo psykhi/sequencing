@@ -39,27 +39,26 @@ func sub(a byte, b byte) int {
 
 func nwScore(x []byte, y []byte) []int {
 	//fmt.Printf("NWS on %v and %v\n", string(x), string(y))
-	score := make([][]int, len(x)+1)
-	for i := 0; i <= len(x); i++ {
-		score[i] = make([]int, len(y)+1)
-	}
+	row1 := make([]int, len(y)+1)
+	row2 := make([]int, len(y)+1)
 
 	for j := 0; j < len(y); j++ {
-		score[0][j+1] = score[0][j] + insert(y[j])
+		row1[j+1] = insert(y[j])
 	}
-	for i := 0; i < len(x); i++ {
-		score[i+1][0] = score[i][0] + del(x[i])
-	}
+
 	for i := 1; i < len(x)+1; i++ {
+		row1, row2 = row2, row1
+		row2[0] = row1[0] + del(x[i-1])
+
 		for j := 1; j < len(y)+1; j++ {
-			scoreSub := score[i-1][j-1] + sub(x[i-1], y[j-1])
-			scoreDel := score[i-1][j] + del(x[i-1])
-			scoreIns := score[i][j-1] + insert(y[j-1])
-			score[i][j] = max(scoreSub, scoreDel, scoreIns)
+			scoreSub := row1[j-1] + sub(x[i-1], y[j-1])
+			scoreDel := row1[j] + del(x[i-1])
+			scoreIns := row2[j-1] + insert(y[j-1])
+			row2[j] = max(scoreSub, scoreDel, scoreIns)
 		}
 	}
 	//fmt.Printf("%v\n", score)
-	return score[len(x)]
+	return row2
 }
 
 func argmax(a []int, b []int) int {
@@ -79,8 +78,13 @@ func argmax(a []int, b []int) int {
 
 func Hirschberg(x []byte, y []byte) ([]byte, []byte) {
 	//fmt.Printf("H on %s and %s\n", string(x), string(y))
-	z := make([]byte, 0)
-	w := make([]byte, 0)
+	var z, w []byte
+
+	revy := rev(y)
+	if len(x) == 0 || len(y) == 0 {
+		z = make([]byte, 0)
+		w = make([]byte, 0)
+	}
 	if len(x) == 0 {
 		for i := 0; i < len(y); i++ {
 			z = append(z, '-')
@@ -96,12 +100,13 @@ func Hirschberg(x []byte, y []byte) ([]byte, []byte) {
 		return z, w
 	}
 	if len(x) == 1 || len(y) == 1 {
-		return NeedlemanWunsch(x, y)
+		return NeedlemanWunsch(x, y, -2, sub)
 	}
+
 	xlen := len(x)
 	xmid := xlen / 2
 	ScoreL := nwScore(x[0:xmid], y)
-	ScoreR := nwScore(rev(x[xmid:]), rev(y))
+	ScoreR := nwScore(rev(x[xmid:]), revy)
 	//fmt.Printf("L %v R %v\n", ScoreL, ScoreR)
 	ymid := argmax(ScoreL, revInt(ScoreR))
 	//fmt.Printf("y %s\n", string(y))

@@ -1,15 +1,6 @@
 package alignment
 
-var GapPenalty = -1
-
-func similarity(a byte, b byte) int {
-	if a == b {
-		return 1
-	}
-	return -1
-}
-
-func NeedlemanWunsch(x []byte, y []byte) ([]byte, []byte) {
+func NeedlemanWunsch(x []byte, y []byte, gap int, similarity func(byte, byte) int) ([]byte, []byte) {
 	sub := 0
 	ins := 0
 	del := 0
@@ -18,16 +9,16 @@ func NeedlemanWunsch(x []byte, y []byte) ([]byte, []byte) {
 	f := make([][]int, len(x))
 	for i := 0; i < len(x); i++ {
 		f[i] = make([]int, len(y))
-		f[i][0] = GapPenalty * i
+		f[i][0] = gap * i
 	}
 	for j := 0; j < len(y); j++ {
-		f[0][j] = GapPenalty * j
+		f[0][j] = gap * j
 	}
 	for i := 1; i < len(x); i++ {
 		for j := 1; j < len(y); j++ {
 			match := f[i-1][j-1] + similarity(x[i], y[j])
-			del := f[i-1][j] + GapPenalty
-			ins := f[i][j-1] + GapPenalty
+			del := f[i-1][j] + gap
+			ins := f[i][j-1] + gap
 			f[i][j] = max(match, del, ins)
 		}
 	}
@@ -49,7 +40,7 @@ func NeedlemanWunsch(x []byte, y []byte) ([]byte, []byte) {
 			w = append([]byte{y[j]}, w...)
 			i--
 			j--
-		} else if i > 0 && f[i][j] == f[i-1][j]+GapPenalty {
+		} else if i > 0 && f[i][j] == f[i-1][j]+gap {
 			del++
 			z = append([]byte{x[i]}, z...)
 			w = append([]byte{'-'}, w...)
