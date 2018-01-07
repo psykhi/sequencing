@@ -15,6 +15,12 @@
 			"revisionTime": "2016-01-10T10:55:54Z"
 		},
 		{
+			"checksumSHA1": "eDQ6f1EsNf+frcRO/9XukSEchm8=",
+			"path": "github.com/satori/go.uuid",
+			"revision": "36e9d2ebbde5e3f13ab2e25625fd453271d6522e",
+			"revisionTime": "2018-01-03T17:44:51Z"
+		},
+		{
 			"checksumSHA1": "uyVU5fRfEK17QZuODRjeZX8zDqg=",
 			"path": "github.com/stretchr/testify/assert",
 			"revision": "87b1dfb5b2fa649f52695dd9eae19abe404a4308",
@@ -27,5 +33,5 @@
 			"revisionTime": "2017-12-08T14:26:14Z"
 		}
 	],
-	"rootPath": "github.com/psykhi/alignment"
+	"rootPath": "github.com/psykhi/sequencing"
 }

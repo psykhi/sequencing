@@ -12,6 +12,12 @@ func similarity(a byte, b byte) int {
 	}
 	return -1
 }
+func similarityStrings(a string, b string) int {
+	if a == b {
+		return 1
+	}
+	return -1
+}
 
 const maxSize = 5000
 
@@ -28,6 +34,17 @@ func TestNeedlemanWunsch(t *testing.T) {
 	fmt.Printf("%s\n%s\n", string(z), string(w))
 	assert.Equal(t, "AB-CDEF", string(z))
 	assert.Equal(t, "ABCCDEF", string(w))
+}
+
+func TestNeedlemanWunschStrings(t *testing.T) {
+
+	a := []string{"10__8__0__126", "INFO", "2014", "08", "21", "17", "07", "46", "143", "2137", "__main__", "run", "Current", "logs", "per", "second", "is", "0"}
+	b := []string{"10__8__0__126", "INFO", "2014", "08", "21", "17", "07", "46", "143", "2137", "__main__", "run", "Current", "logs", "per", "second", "is", "8"}
+
+	z, w, score := NeedlemanWunschReuseWords(a, b, -1, similarityStrings)
+	assert.Equal(t, []string{"A", "B", "-", "C", "D", "E", "F"}, z)
+	assert.Equal(t, []string{"A", "B", "C", "C", "D", "E", "F"}, w)
+	assert.Equal(t, 5, score)
 }
 
 func BenchmarkNeedlemanWunsch(b *testing.B) {
@@ -68,6 +85,15 @@ func BenchmarkNeedlemanWunsch(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			NeedlemanWunsch(x, y, -1, similarity, f)
+		}
+	})
+	b.Run("Long log line reuse", func(b *testing.B) {
+		x := []string{"10__8__0__126", "INFO", "2014", "08", "21", "17", "07", "46", "143", "2137", "__main__", "run", "Current", "logs", "per", "second", "is", "0"}
+		y := []string{"10__8__0__126", "INFO", "2014", "08", "21", "17", "07", "46", "143", "2137", "__main__", "run", "Current", "logs", "per", "second", "is", "8"}
+
+		b.ReportAllocs()
+		for i := 0; i < b.N; i++ {
+			NeedlemanWunschReuseWords(x, y, -1, similarityStrings)
 		}
 	})
 }
