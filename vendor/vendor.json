@@ -1,0 +1,31 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "mrz/kicZiUaHxkyfvC/DyQcr8Do=",
+			"path": "github.com/davecgh/go-spew/spew",
+			"revision": "ecdeabc65495df2dec95d7c4a4c3e021903035e5",
+			"revisionTime": "2017-10-02T20:02:53Z"
+		},
+		{
+			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
+			"path": "github.com/pmezard/go-difflib/difflib",
+			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
+			"revisionTime": "2016-01-10T10:55:54Z"
+		},
+		{
+			"checksumSHA1": "uyVU5fRfEK17QZuODRjeZX8zDqg=",
+			"path": "github.com/stretchr/testify/assert",
+			"revision": "87b1dfb5b2fa649f52695dd9eae19abe404a4308",
+			"revisionTime": "2017-12-31T12:27:32Z"
+		},
+		{
+			"checksumSHA1": "5Av7I6vgz6zu2UIJyfOZpWPOhyw=",
+			"path": "golang.org/x/tools/container/intsets",
+			"revision": "8cab8a1319f0be9798e7fe78b15da75e5f94b2e9",
+			"revisionTime": "2017-12-08T14:26:14Z"
+		}
+	],
+	"rootPath": "github.com/psykhi/alignment"
+}
