@@ -1,10 +1,7 @@
 package alignment
 
-func NeedlemanWunsch(x []byte, y []byte, gap int, similarity func(byte, byte) int) ([]byte, []byte) {
-	sub := 0
-	ins := 0
-	del := 0
-	same := 0
+func NeedlemanWunsch(x []byte, y []byte, gap int, similarity func(byte, byte) int) ([]byte, []byte, int) {
+	score := 0
 	// Build grid
 	f := make([][]int, len(x))
 	for i := 0; i < len(x); i++ {
@@ -29,34 +26,33 @@ func NeedlemanWunsch(x []byte, y []byte, gap int, similarity func(byte, byte) in
 
 	i := len(x) - 1
 	j := len(y) - 1
+
 	for i > 0 || j > 0 {
-		if i > 0 && j > 0 && f[i][j] == f[i-1][j-1]+similarity(x[i], y[j]) {
-			if similarity(x[i], y[j]) == -1 {
-				sub++
-			} else {
-				same++
-			}
+		if i > 0 && j > 0 && f[i][j] == f[i-1][j-1]+similarity(x[i], y[j]) { // match
+			score += similarity(x[i], y[j])
+
 			z = append([]byte{x[i]}, z...)
 			w = append([]byte{y[j]}, w...)
 			i--
 			j--
-		} else if i > 0 && f[i][j] == f[i-1][j]+gap {
-			del++
+		} else if i > 0 && f[i][j] == f[i-1][j]+gap { // del
+			score += gap
 			z = append([]byte{x[i]}, z...)
 			w = append([]byte{'-'}, w...)
 			i--
-		} else {
-			ins++
+		} else { // ins
+			score += gap
 			z = append([]byte{'-'}, z...)
 			w = append([]byte{y[j]}, w...)
 			j--
 		}
 	}
+
 	if i == 0 && j == 0 {
+		score += similarity(x[i], y[j])
 		z = append([]byte{x[i]}, z...)
 		w = append([]byte{y[j]}, w...)
 	}
 
-	//fmt.Printf("LEN: %d|%d, SAME: %d, SUB: %d, DEL: %d, INSERT: %d\n", len(x), len(y), same, sub, del, ins)
-	return z, w
+	return z, w, score
 }

@@ -17,10 +17,11 @@ func TestNeedlemanWunsch(t *testing.T) {
 	a := []byte("ABCDEF")
 	b := []byte("ABCCDEF")
 
-	z, w := NeedlemanWunsch(a, b, -1, similarity)
+	z, w, score := NeedlemanWunsch(a, b, -1, similarity)
 	fmt.Printf("%s\n%s\n", string(z), string(w))
 	assert.Equal(t, "AB-CDEF", string(z))
 	assert.Equal(t, "ABCCDEF", string(w))
+	assert.Equal(t, 5, score)
 }
 
 func BenchmarkNeedlemanWunsch(b *testing.B) {
