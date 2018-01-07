@@ -1,4 +1,4 @@
-package alignment
+package sequencing
 
 func rev(s []byte) []byte {
 	ret := make([]byte, 0)

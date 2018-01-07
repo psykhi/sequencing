@@ -1,4 +1,4 @@
-package alignment
+package sequencing
 
 import (
 	"fmt"

@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/psykhi/alignment"
+	"github.com/psykhi/sequencing"
 	"golang.org/x/tools/container/intsets"
 	"log"
 	"net/http"
@@ -58,7 +58,7 @@ func main() {
 			ratio := 0.0
 			var oldMatch *Cluster
 			for _, old := range clusters {
-				_, _, score := alignment.NeedlemanWunschReuse(in, []byte(old.OriginalLine), -1, similarity)
+				_, _, score := sequencing.NeedlemanWunschReuse(in, []byte(old.OriginalLine), -1, similarity)
 				if score > maxScore {
 					maxScore = score
 					//minW = w

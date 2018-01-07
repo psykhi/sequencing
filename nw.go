@@ -1,4 +1,4 @@
-package alignment
+package sequencing
 
 func NeedlemanWunsch(x []byte, y []byte, gap int, similarity func(byte, byte) int) ([]byte, []byte, int) {
 	score := 0
