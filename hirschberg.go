@@ -15,15 +15,20 @@ func revInt(s []int) []int {
 	return s
 }
 
-func max(vals ...int) int {
-	m := vals[0]
-	for i := 0; i < len(vals); i++ {
-		if vals[i] > m {
-			m = vals[i]
+func max3(a, b, c int) int {
+	if b > c {
+		if b > a {
+			return b
 		}
+		return a
+	} else {
+		if c > a {
+			return c
+		}
+		return a
 	}
-	return m
 }
+
 func insert(a byte) int {
 	return -2
 }
@@ -54,7 +59,7 @@ func nwScore(x []byte, y []byte) []int {
 			scoreSub := row1[j-1] + sub(x[i-1], y[j-1])
 			scoreDel := row1[j] + del(x[i-1])
 			scoreIns := row2[j-1] + insert(y[j-1])
-			row2[j] = max(scoreSub, scoreDel, scoreIns)
+			row2[j] = max3(scoreSub, scoreDel, scoreIns)
 		}
 	}
 	//fmt.Printf("%v\n", score)

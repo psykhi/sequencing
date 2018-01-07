@@ -58,7 +58,7 @@ func main() {
 			ratio := 0.0
 			var oldMatch *Cluster
 			for _, old := range clusters {
-				_, _, score := alignment.NeedlemanWunsch(in, []byte(old.OriginalLine), -1, similarity)
+				_, _, score := alignment.NeedlemanWunschReuse(in, []byte(old.OriginalLine), -1, similarity)
 				if score > maxScore {
 					maxScore = score
 					//minW = w
@@ -91,12 +91,32 @@ func main() {
 	)
 
 	for range signals {
+		// Write plain text
+		f, err := os.OpenFile("clusters.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0755)
+		if err != nil {
+			panic(fmt.Sprintf("err %s", err))
+		}
+		for _, cluster := range clusters {
+			f.WriteString(cluster.OriginalLine)
+			f.WriteString("\n")
+			for _, m := range cluster.Matches {
+				f.WriteString(m.Line)
+				f.WriteString("\n")
+			}
+			f.WriteString("\n")
+		}
+		err = f.Close()
+		if err != nil {
+			panic(fmt.Sprintf("err %s", err))
+		}
+
+		// Write as JSON
 		js, err := json.Marshal(clusters)
 
 		if err != nil {
 			panic(fmt.Sprintf("err %s", err))
 		}
-		f, err := os.OpenFile("clusters.json", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0755)
+		f, err = os.OpenFile("clusters.json", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0755)
 		if err != nil {
 			panic(fmt.Sprintf("err %s", err))
 		}
