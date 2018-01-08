@@ -91,8 +91,7 @@ func Hirschberg(x []byte, y []byte) ([]byte, []byte) {
 		return z, w
 	}
 	if len(x) == 1 || len(y) == 1 {
-		z, w, _ = NeedlemanWunsch(x, y, -2, sub)
-		return z, w
+		return NeedlemanWunsch(x, y, -2, sub, nil)
 	}
 
 	xlen := len(x)
