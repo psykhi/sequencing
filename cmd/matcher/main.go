@@ -5,24 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/psykhi/sequencing"
+	"github.com/satori/go.uuid"
 	"golang.org/x/tools/container/intsets"
 	"log"
+	"math"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 )
 
-func similarity(b byte, b2 byte) int {
-	if b == b2 {
-		return 1
-	}
-	return -1
-}
-
 type Cluster struct {
-	OriginalLine string
+	id           uuid.UUID
+	OriginalLine []string
 	Matches      []*Match
 }
 
@@ -32,53 +29,78 @@ type Match struct {
 	Line  string
 }
 
-func NewCluster(line []byte) *Cluster {
+func NewCluster(line []string) *Cluster {
 	matches := make([]*Match, 0)
+	id, _ := uuid.NewV4()
 	return &Cluster{
-		string(line),
+		id,
+		line,
 		matches,
 	}
 }
 
+var dels = []rune{'/', ',', ':', ' ', ')', '(', '|', '{', '}', '=', '.', '"', '\'', '[', ']', '-'}
+
 func main() {
 	clusters := make([]*Cluster, 0)
+	delimiters := make(map[rune]int)
+	for i, r := range dels {
+		delimiters[r] = i
+	}
+
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
 
 	go func() {
+		threshold := 0.3
 		count := 0
+		nwCount := 0
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
 			count++
-			in := scanner.Bytes()
-			maxScore := intsets.MinInt
+			in := scanner.Text()
+			vec := make([]int, len(dels))
+
+			for i := 0; i < len(in); i++ {
+				pos, ok := delimiters[rune(in[i])]
+				if ok {
+					vec[pos]++
+				}
+			}
+			words := strings.FieldsFunc(in, func(r rune) bool {
+				_, ok := delimiters[r]
+				return ok
+			})
+			minDistance := intsets.MaxInt
 			//var minZ []byte
 			//var minW []byte
-			ratio := 0.0
+			ratio := math.MaxFloat64
 			var oldMatch *Cluster
 			for _, old := range clusters {
-				_, _, score := sequencing.NeedlemanWunsch(in, []byte(old.OriginalLine), -1, similarity)
-				if score > maxScore {
-					maxScore = score
+				//fmt.Printf("%#v\n %#v\n", words, old.OriginalLine)
+				distance := sequencing.LevenshteinDistanceStrings(words, old.OriginalLine, nil, nil)
+				nwCount++
+				if distance < minDistance {
+					minDistance = distance
 					//minW = w
 					//minZ = z
 					oldMatch = old
-					ratio = float64(maxScore) / float64(len(in))
-					if ratio > 0.7 {
+					ratio = float64(minDistance) / float64(len(words))
+					//fmt.Printf("score %d, ratio %f", minDistance, ratio)
+					if ratio < threshold {
 						oldMatch.Matches = append(oldMatch.Matches,
-							&Match{maxScore, float64(maxScore) / float64(len(in)), string(in)})
+							&Match{minDistance, float64(minDistance) / float64(len(in)), string(in)})
 						break
 					}
 				}
 			}
 
-			if ratio < 0.7 {
+			if ratio > threshold {
 				// New cluster
-				clusters = append(clusters, NewCluster(in))
-				fmt.Printf("%d clusters, %d lines read\n", len(clusters), count)
+				clusters = append(clusters, NewCluster(words))
+				fmt.Printf("%d clusters, %d lines read, %d NW\n", len(clusters), count, nwCount)
 			}
-
 		}
 	}()
 
@@ -97,7 +119,9 @@ func main() {
 			panic(fmt.Sprintf("err %s", err))
 		}
 		for _, cluster := range clusters {
-			f.WriteString(cluster.OriginalLine)
+			for _, word := range cluster.OriginalLine {
+				f.WriteString(word)
+			}
 			f.WriteString("\n")
 			for _, m := range cluster.Matches {
 				f.WriteString(m.Line)
