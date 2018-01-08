@@ -2,7 +2,6 @@ package sequencing
 
 // https://en.wikipedia.org/wiki/Levenshtein_distance?section=9#Iterative_with_two_matrix_rows
 func LevenshteinDistance(a []byte, b []byte, v0 []int, v1 []int) int {
-
 	m := len(a)
 	n := len(b)
 
@@ -27,9 +26,6 @@ func LevenshteinDistance(a []byte, b []byte, v0 []int, v1 []int) int {
 			} else {
 				substitutionCost = 1
 			}
-			//min1 := math.Min(float64(v1[j]+1), float64(v0[j+1]+1))
-
-			//v1[j+1] = int(math.Min(min1, float64(v0[j]+substitutionCost)))
 			v1[j+1] = min3(v1[j]+1, v0[j+1]+1, v0[j]+substitutionCost)
 		}
 		temp := v0
@@ -41,7 +37,6 @@ func LevenshteinDistance(a []byte, b []byte, v0 []int, v1 []int) int {
 }
 
 func LevenshteinDistanceStrings(a []string, b []string, v0 []int, v1 []int) int {
-
 	m := len(a)
 	n := len(b)
 
@@ -66,9 +61,6 @@ func LevenshteinDistanceStrings(a []string, b []string, v0 []int, v1 []int) int 
 			} else {
 				substitutionCost = 1
 			}
-			//min1 := math.Min(float64(v1[j]+1), float64(v0[j+1]+1))
-
-			//v1[j+1] = int(math.Min(min1, float64(v0[j]+substitutionCost)))
 			v1[j+1] = min3(v1[j]+1, v0[j+1]+1, v0[j]+substitutionCost)
 		}
 		temp := v0
