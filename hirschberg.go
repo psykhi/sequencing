@@ -68,7 +68,6 @@ func argmax(a []int, b []int) int {
 }
 
 func Hirschberg(x []byte, y []byte) ([]byte, []byte) {
-	//fmt.Printf("H on %s and %s\n", string(x), string(y))
 	var z, w []byte
 
 	revy := rev(y)

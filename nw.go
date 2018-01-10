@@ -1,6 +1,9 @@
 package sequencing
 
-func NeedlemanWunsch(x []byte, y []byte, gap int, similarity func(byte, byte) int, f [][]int) ([]byte, []byte) {
+// Align byte arrays x and y into z and w.
+// Example :ABCDEF and ABCCDEF can be aligned in AB-CDEF and ABCCDEF
+// https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm
+func NeedlemanWunsch(x []byte, y []byte, gap int, similarity func(byte, byte) int, f [][]int) (z []byte, w []byte) {
 	// Build grid
 	if f == nil {
 		f = make([][]int, len(x))

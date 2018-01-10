@@ -1,6 +1,8 @@
 package sequencing
 
+// Compute Levenshtein distance on byte arrays
 // https://en.wikipedia.org/wiki/Levenshtein_distance?section=9#Iterative_with_two_matrix_rows
+// v0 and v1 buffers can be provided in order to reuse them and avoid allocations
 func LevenshteinDistance(a []byte, b []byte, v0 []int, v1 []int) int {
 	m := len(a)
 	n := len(b)
@@ -36,6 +38,9 @@ func LevenshteinDistance(a []byte, b []byte, v0 []int, v1 []int) int {
 	return v0[n]
 }
 
+// Compute Levenshtein distance on strings sequences
+// https://en.wikipedia.org/wiki/Levenshtein_distance?section=9#Iterative_with_two_matrix_rows
+// v0 and v1 buffers can be provided in order to reuse them and avoid allocations
 func LevenshteinDistanceStrings(a []string, b []string, v0 []int, v1 []int) int {
 	m := len(a)
 	n := len(b)
