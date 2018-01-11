@@ -28,8 +28,8 @@ func NeedlemanWunsch(x []byte, y []byte, gap int, similarity func(byte, byte) in
 	}
 
 	// Align
-	z := make([]byte, 0)
-	w := make([]byte, 0)
+	z = make([]byte, 0)
+	w = make([]byte, 0)
 
 	i := len(x) - 1
 	j := len(y) - 1
