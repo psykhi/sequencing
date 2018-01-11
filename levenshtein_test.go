@@ -5,6 +5,41 @@ import (
 	"testing"
 )
 
+type char struct {
+	byte
+}
+
+func (a char) Equal(comparable Comparable) bool {
+	return a.byte == comparable.(char).byte
+}
+
+type seq struct {
+	chars []char
+}
+
+func (s *seq) Val(i int) Comparable {
+	return s.chars[i]
+}
+
+func (s *seq) Len() int {
+	return len(s.chars)
+}
+
+func toSeq(s string) Sequence {
+	sb := []byte(s)
+	chars := make([]char, 0, len(sb))
+	for _, b := range sb {
+		chars = append(chars, char{b})
+	}
+	return &seq{chars}
+}
+
+func TestDistanceI(t *testing.T) {
+
+	d := LevenshteinDistanceInterface(toSeq("kitten"), toSeq("sitting"), nil, nil)
+	assert.Equal(t, 3, d)
+}
+
 func TestDistance(t *testing.T) {
 	d := LevenshteinDistance([]byte("kitten"), []byte("sitting"), nil, nil)
 	assert.Equal(t, 3, d)
@@ -27,6 +62,17 @@ func BenchmarkLevenshteinDistance(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			LevenshteinDistance(x, y, nil, nil)
+		}
+	})
+	b.Run("25-30 char string", func(b *testing.B) {
+		x := toSeq("This is a longer string")
+		y := toSeq("This is a much  longer string")
+
+		b.ResetTimer()
+		b.ReportAllocs()
+		for i := 0; i < b.N; i++ {
+
+			LevenshteinDistanceInterface(x, y, nil, nil)
 		}
 	})
 	b.Run("Long log line", func(b *testing.B) {
