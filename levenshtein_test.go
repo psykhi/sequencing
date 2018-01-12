@@ -5,19 +5,11 @@ import (
 	"testing"
 )
 
-type char struct {
-	byte
-}
-
-func (a char) Equal(comparable Comparable) bool {
-	return a.byte == comparable.(char).byte
-}
-
 type seq struct {
-	chars []char
+	chars []byte
 }
 
-func (s *seq) Val(i int) Comparable {
+func (s *seq) Val(i int) interface{} {
 	return s.chars[i]
 }
 
@@ -27,17 +19,26 @@ func (s *seq) Len() int {
 
 func toSeq(s string) Sequence {
 	sb := []byte(s)
-	chars := make([]char, 0, len(sb))
-	for _, b := range sb {
-		chars = append(chars, char{b})
-	}
-	return &seq{chars}
+	return &seq{sb}
 }
 
 func TestDistanceI(t *testing.T) {
-
 	d := LevenshteinDistanceInterface(toSeq("kitten"), toSeq("sitting"), nil, nil)
 	assert.Equal(t, 3, d)
+}
+
+func TestDistanceK(t *testing.T) {
+	d := LevenshteinDistanceK([]byte("kitten"), []byte("sitting"), nil, nil, 3)
+	assert.Equal(t, 3, d)
+
+	d = LevenshteinDistanceK([]byte("kitten"), []byte("sitting"), nil, nil, 2)
+	assert.Equal(t, -1, d)
+
+	d = LevenshteinDistanceK([]byte("elephant"), []byte("hippo"), nil, nil, 8)
+	assert.Equal(t, 7, d)
+
+	d = LevenshteinDistanceK([]byte("elephant"), []byte(""), nil, nil, 100)
+	assert.Equal(t, 8, d)
 }
 
 func TestDistance(t *testing.T) {
@@ -64,7 +65,7 @@ func BenchmarkLevenshteinDistance(b *testing.B) {
 			LevenshteinDistance(x, y, nil, nil)
 		}
 	})
-	b.Run("25-30 char string", func(b *testing.B) {
+	b.Run("25-30 char string interface", func(b *testing.B) {
 		x := toSeq("This is a longer string")
 		y := toSeq("This is a much  longer string")
 
@@ -82,6 +83,15 @@ func BenchmarkLevenshteinDistance(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			LevenshteinDistance(x, y, nil, nil)
+		}
+	})
+	b.Run("Long log line K bound", func(b *testing.B) {
+		x := []byte("10__8__0__146 kernel process Google Chrome Ca[3955] caught causing excessive wakeups. Observed wakeups rate (per sec): 392; Maximum permitted wakeups rate (per sec): 150; Observation period: 300 seconds; Task lifetime number of wakeups: 317314")
+		y := []byte("10__8__0__146 kernel process Sublime Text[802] caught causing excessive wakeups. Observed wakeups rate (per sec): 233; Maximum permitted wakeups rate (per sec): 150; Observation period: 300 seconds; Task lifetime number of wakeups: 95333")
+
+		b.ReportAllocs()
+		for i := 0; i < b.N; i++ {
+			LevenshteinDistanceK(x, y, nil, nil, len(x)/4)
 		}
 	})
 	b.Run("Long log line buffer reuse", func(b *testing.B) {
