@@ -1,4 +1,4 @@
-This package contains implementation of 3 dynamic programming algorithms:
+This package contains implementation of 4 dynamic programming algorithms:
 
 - [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) (edit distance)
 - [Needleman-Wunsch algorithm](https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm) (sequence alignment)
