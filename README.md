@@ -4,6 +4,7 @@ This package contains implementation of 3 dynamic programming algorithms:
 - [Needleman-Wunsch algorithm](https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm) (sequence alignment)
 - [Hirschberg algorithm](https://en.wikipedia.org/wiki/Hirschberg%27s_algorithm) (space-optimised NW algorithm)
 - [Longest common subsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem)
+
 ###Levenshtein distance
 
 ```go
