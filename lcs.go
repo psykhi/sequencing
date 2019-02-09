@@ -11,12 +11,8 @@ func LCSStrings(a []string, b []string, v0 []int, v1 []int) int {
 		v1 = make([]int, n+1, n+1)
 	}
 
-	for i := 0; i < n+1; i++ {
-		v0[i] = i
-	}
-
 	for i := 0; i < m; i++ {
-		v1[0] = i + 1
+		v1[0] = 0
 
 		for j := 0; j < n; j++ {
 			if a[i] == b[j] {
